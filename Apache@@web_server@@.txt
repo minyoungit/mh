@@ -1,0 +1,565 @@
+===============  Apache Security Check  ===============
+
+Copyright (c) 2016 KIITS Co. Ltd. All right Reserved
+
+
+=======================================================================
+[WA-1] Apache 디렉토리 리스팅 제거
+=======================================================================
+
+[1-START]
+★ Indexes 옵션이 존재함
+[현황]
+171:	Options Indexes FollowSymLinks
+[1-END]
+
+[WA-1]Result : VULNERABLE
+
+
+
+=======================================================================
+[WA-2] Apache 웹 프로세스 권한 제한
+=======================================================================
+
+[2-START]
+★ Apache 구동 계정이 root가 아닌 일반 계정임
+[현황]
+115:User ${APACHE_RUN_USER}
+116:Group ${APACHE_RUN_GROUP}
+[2-END]
+
+[WA-2]Result : GOOD
+
+
+
+=======================================================================
+[WA-3] Apache 상위 디렉토리 접근 금지
+=======================================================================
+
+[3-START]
+★ AllowOverride None 설정이 존재함
+[현황]
+161:	AllowOverride None
+166:	AllowOverride None
+172:	AllowOverride None
+[3-END]
+
+[WA-3]Result : VULNERABLE
+
+
+
+=======================================================================
+[WA-4] Apache 불필요한 파일 제거
+=======================================================================
+
+[4-START]
+★ 불필요한 manual 파일이 존재하지 않음
+[4-END]
+
+[WA-4]Result : GOOD
+
+
+
+=======================================================================
+[WA-5] Apache 링크 사용금지
+=======================================================================
+
+[5-START]
+★ FollowSymLinks 옵션이 존재함
+[현황]
+160:	Options FollowSymLinks
+171:	Options Indexes FollowSymLinks
+[5-END]
+
+[WA-5]Result : VULNERABLE
+
+
+
+=======================================================================
+[WA-6] Apache 파일 업로드 및 다운로드 제한
+=======================================================================
+
+[6-START]
+★ LimitRequestBody 옵션이 존재하지 않음
+[6-END]
+
+[WA-6]Result : VULNERABLE
+
+
+
+=======================================================================
+[WA-7] Apache 웹 서비스 영역의 분리
+=======================================================================
+
+[7-START]
+★ DocumentRoot로 기본경로를 사용하지 않음
+[현황]
+
+[7-END]
+
+[WA-7]Result : GOOD
+
+
+
+=======================================================================
+[WA-8] Apache 웹 서비스 정보 숨김
+=======================================================================
+
+[8-START]
+★ ServerTokens 옵션이 존재하지 않음
+[8-END]
+
+[WA-8]Result : VULNERABLE
+
+
+
+=======================================================================
+[ HTTP CONF ]
+=======================================================================
+
+     1	# This is the main Apache server configuration file.  It contains the
+     2	# configuration directives that give the server its instructions.
+     3	# See http://httpd.apache.org/docs/2.4/ for detailed information about
+     4	# the directives and /usr/share/doc/apache2/README.Debian about Debian specific
+     5	# hints.
+     6	#
+     7	#
+     8	# Summary of how the Apache 2 configuration works in Debian:
+     9	# The Apache 2 web server configuration in Debian is quite different to
+    10	# upstream's suggested way to configure the web server. This is because Debian's
+    11	# default Apache2 installation attempts to make adding and removing modules,
+    12	# virtual hosts, and extra configuration directives as flexible as possible, in
+    13	# order to make automating the changes and administering the server as easy as
+    14	# possible.
+    15	
+    16	# It is split into several files forming the configuration hierarchy outlined
+    17	# below, all located in the /etc/apache2/ directory:
+    18	#
+    19	#	/etc/apache2/
+    20	#	|-- apache2.conf
+    21	#	|	`--  ports.conf
+    22	#	|-- mods-enabled
+    23	#	|	|-- *.load
+    24	#	|	`-- *.conf
+    25	#	|-- conf-enabled
+    26	#	|	`-- *.conf
+    27	# 	`-- sites-enabled
+    28	#	 	`-- *.conf
+    29	#
+    30	#
+    31	# * apache2.conf is the main configuration file (this file). It puts the pieces
+    32	#   together by including all remaining configuration files when starting up the
+    33	#   web server.
+    34	#
+    35	# * ports.conf is always included from the main configuration file. It is
+    36	#   supposed to determine listening ports for incoming connections which can be
+    37	#   customized anytime.
+    38	#
+    39	# * Configuration files in the mods-enabled/, conf-enabled/ and sites-enabled/
+    40	#   directories contain particular configuration snippets which manage modules,
+    41	#   global configuration fragments, or virtual host configurations,
+    42	#   respectively.
+    43	#
+    44	#   They are activated by symlinking available configuration files from their
+    45	#   respective *-available/ counterparts. These should be managed by using our
+    46	#   helpers a2enmod/a2dismod, a2ensite/a2dissite and a2enconf/a2disconf. See
+    47	#   their respective man pages for detailed information.
+    48	#
+    49	# * The binary is called apache2. Due to the use of environment variables, in
+    50	#   the default configuration, apache2 needs to be started/stopped with
+    51	#   /etc/init.d/apache2 or apache2ctl. Calling /usr/bin/apache2 directly will not
+    52	#   work with the default configuration.
+    53	
+    54	
+    55	# Global configuration
+    56	#
+    57	
+    58	#
+    59	# ServerRoot: The top of the directory tree under which the server's
+    60	# configuration, error, and log files are kept.
+    61	#
+    62	# NOTE!  If you intend to place this on an NFS (or otherwise network)
+    63	# mounted filesystem then please read the Mutex documentation (available
+    64	# at <URL:http://httpd.apache.org/docs/2.4/mod/core.html#mutex>);
+    65	# you will save yourself a lot of trouble.
+    66	#
+    67	# Do NOT add a slash at the end of the directory path.
+    68	#
+    69	#ServerRoot "/etc/apache2"
+    70	
+    71	#
+    72	# The accept serialization lock file MUST BE STORED ON A LOCAL DISK.
+    73	#
+    74	#Mutex file:${APACHE_LOCK_DIR} default
+    75	
+    76	#
+    77	# The directory where shm and other runtime files will be stored.
+    78	#
+    79	
+    80	DefaultRuntimeDir ${APACHE_RUN_DIR}
+    81	
+    82	#
+    83	# PidFile: The file in which the server should record its process
+    84	# identification number when it starts.
+    85	# This needs to be set in /etc/apache2/envvars
+    86	#
+    87	PidFile ${APACHE_PID_FILE}
+    88	
+    89	#
+    90	# Timeout: The number of seconds before receives and sends time out.
+    91	#
+    92	Timeout 300
+    93	
+    94	#
+    95	# KeepAlive: Whether or not to allow persistent connections (more than
+    96	# one request per connection). Set to "Off" to deactivate.
+    97	#
+    98	KeepAlive On
+    99	
+   100	#
+   101	# MaxKeepAliveRequests: The maximum number of requests to allow
+   102	# during a persistent connection. Set to 0 to allow an unlimited amount.
+   103	# We recommend you leave this number high, for maximum performance.
+   104	#
+   105	MaxKeepAliveRequests 100
+   106	
+   107	#
+   108	# KeepAliveTimeout: Number of seconds to wait for the next request from the
+   109	# same client on the same connection.
+   110	#
+   111	KeepAliveTimeout 5
+   112	
+   113	
+   114	# These need to be set in /etc/apache2/envvars
+   115	User ${APACHE_RUN_USER}
+   116	Group ${APACHE_RUN_GROUP}
+   117	
+   118	#
+   119	# HostnameLookups: Log the names of clients or just their IP addresses
+   120	# e.g., www.apache.org (on) or 204.62.129.132 (off).
+   121	# The default is off because it'd be overall better for the net if people
+   122	# had to knowingly turn this feature on, since enabling it means that
+   123	# each client request will result in AT LEAST one lookup request to the
+   124	# nameserver.
+   125	#
+   126	HostnameLookups Off
+   127	
+   128	# ErrorLog: The location of the error log file.
+   129	# If you do not specify an ErrorLog directive within a <VirtualHost>
+   130	# container, error messages relating to that virtual host will be
+   131	# logged here.  If you *do* define an error logfile for a <VirtualHost>
+   132	# container, that host's errors will be logged there and not here.
+   133	#
+   134	ErrorLog ${APACHE_LOG_DIR}/error.log
+   135	
+   136	#
+   137	# LogLevel: Control the severity of messages logged to the error_log.
+   138	# Available values: trace8, ..., trace1, debug, info, notice, warn,
+   139	# error, crit, alert, emerg.
+   140	# It is also possible to configure the log level for particular modules, e.g.
+   141	# "LogLevel info ssl:warn"
+   142	#
+   143	LogLevel warn
+   144	
+   145	# Include module configuration:
+   146	IncludeOptional mods-enabled/*.load
+   147	IncludeOptional mods-enabled/*.conf
+   148	
+   149	# Include list of ports to listen on
+   150	Include ports.conf
+   151	
+   152	
+   153	# Sets the default security model of the Apache2 HTTPD server. It does
+   154	# not allow access to the root filesystem outside of /usr/share and /var/www.
+   155	# The former is used by web applications packaged in Debian,
+   156	# the latter may be used for local directories served by the web server. If
+   157	# your system is serving content from a sub-directory in /srv you must allow
+   158	# access here, or in any related virtual host.
+   159	<Directory />
+   160		Options FollowSymLinks
+   161		AllowOverride None
+   162		Require all denied
+   163	</Directory>
+   164	
+   165	<Directory /usr/share>
+   166		AllowOverride None
+   167		Require all granted
+   168	</Directory>
+   169	
+   170	<Directory /var/www/>
+   171		Options Indexes FollowSymLinks
+   172		AllowOverride None
+   173		Require all granted
+   174	</Directory>
+   175	
+   176	#<Directory /srv/>
+   177	#	Options Indexes FollowSymLinks
+   178	#	AllowOverride None
+   179	#	Require all granted
+   180	#</Directory>
+   181	
+   182	
+   183	
+   184	
+   185	# AccessFileName: The name of the file to look for in each directory
+   186	# for additional configuration directives.  See also the AllowOverride
+   187	# directive.
+   188	#
+   189	AccessFileName .htaccess
+   190	
+   191	#
+   192	# The following lines prevent .htaccess and .htpasswd files from being
+   193	# viewed by Web clients.
+   194	#
+   195	<FilesMatch "^\.ht">
+   196		Require all denied
+   197	</FilesMatch>
+   198	
+   199	
+   200	#
+   201	# The following directives define some format nicknames for use with
+   202	# a CustomLog directive.
+   203	#
+   204	# These deviate from the Common Log Format definitions in that they use %O
+   205	# (the actual bytes sent including headers) instead of %b (the size of the
+   206	# requested file), because the latter makes it impossible to detect partial
+   207	# requests.
+   208	#
+   209	# Note that the use of %{X-Forwarded-For}i instead of %h is not recommended.
+   210	# Use mod_remoteip instead.
+   211	#
+   212	LogFormat "%v:%p %h %l %u %t \"%r\" %>s %O \"%{Referer}i\" \"%{User-Agent}i\"" vhost_combined
+   213	LogFormat "%h %l %u %t \"%r\" %>s %O \"%{Referer}i\" \"%{User-Agent}i\"" combined
+   214	LogFormat "%h %l %u %t \"%r\" %>s %O" common
+   215	LogFormat "%{Referer}i -> %U" referer
+   216	LogFormat "%{User-agent}i" agent
+   217	
+   218	# Include of directories ignores editors' and dpkg's backup files,
+   219	# see README.Debian for details.
+   220	
+   221	# Include generic snippets of statements
+   222	IncludeOptional conf-enabled/*.conf
+   223	
+   224	# Include the virtual host configurations:
+   225	IncludeOptional sites-enabled/*.conf
+   226	
+   227	# vim: syntax=apache ts=4 sw=4 sts=4 sr noet
+
+
+
+============================================================
+[ Version ]
+============================================================
+
+Linux web_server 4.15.0-213-generic #224-Ubuntu SMP Mon Jun 19 13:30:12 UTC 2023 x86_64 x86_64 x86_64 GNU/Linux
+
+Ubuntu 18.04.6 LTS \n \l
+
+
+
+============================================================
+[ Interface ]
+============================================================
+
+ens33: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        inet 192.168.58.128  netmask 255.255.255.0  broadcast 192.168.58.255
+        inet6 fe80::20c:29ff:fe52:5287  prefixlen 64  scopeid 0x20<link>
+        ether 00:0c:29:52:52:87  txqueuelen 1000  (Ethernet)
+        RX packets 40762  bytes 60244616 (60.2 MB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 5183  bytes 362710 (362.7 KB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+lo: flags=73<UP,LOOPBACK,RUNNING>  mtu 65536
+        inet 127.0.0.1  netmask 255.0.0.0
+        inet6 ::1  prefixlen 128  scopeid 0x10<host>
+        loop  txqueuelen 1000  (Local Loopback)
+        RX packets 179  bytes 18017 (18.0 KB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 179  bytes 18017 (18.0 KB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+
+
+============================================================
+[ Daemon ]
+============================================================
+
+1) ps -ef
+
+UID         PID   PPID  C STIME TTY          TIME CMD
+root          1      0  0 04:53 ?        00:00:05 /sbin/init auto automatic-ubiquity noprompt
+root          2      0  0 04:53 ?        00:00:00 [kthreadd]
+root          4      2  0 04:53 ?        00:00:00 [kworker/0:0H]
+root          6      2  0 04:53 ?        00:00:00 [mm_percpu_wq]
+root          7      2  0 04:53 ?        00:00:00 [ksoftirqd/0]
+root          8      2  0 04:53 ?        00:00:01 [rcu_sched]
+root          9      2  0 04:53 ?        00:00:00 [rcu_bh]
+root         10      2  0 04:53 ?        00:00:00 [migration/0]
+root         11      2  0 04:53 ?        00:00:00 [watchdog/0]
+root         12      2  0 04:53 ?        00:00:00 [cpuhp/0]
+root         13      2  0 04:53 ?        00:00:00 [cpuhp/1]
+root         14      2  0 04:53 ?        00:00:00 [watchdog/1]
+root         15      2  0 04:53 ?        00:00:00 [migration/1]
+root         16      2  0 04:53 ?        00:00:00 [ksoftirqd/1]
+root         18      2  0 04:53 ?        00:00:00 [kworker/1:0H]
+root         19      2  0 04:53 ?        00:00:00 [kdevtmpfs]
+root         20      2  0 04:53 ?        00:00:00 [netns]
+root         21      2  0 04:53 ?        00:00:00 [rcu_tasks_kthre]
+root         22      2  0 04:53 ?        00:00:00 [kauditd]
+root         24      2  0 04:53 ?        00:00:00 [khungtaskd]
+root         25      2  0 04:53 ?        00:00:00 [oom_reaper]
+root         26      2  0 04:53 ?        00:00:00 [writeback]
+root         27      2  0 04:53 ?        00:00:00 [kcompactd0]
+root         28      2  0 04:53 ?        00:00:00 [ksmd]
+root         29      2  0 04:53 ?        00:00:00 [khugepaged]
+root         30      2  0 04:53 ?        00:00:00 [crypto]
+root         31      2  0 04:53 ?        00:00:00 [kintegrityd]
+root         32      2  0 04:53 ?        00:00:00 [kblockd]
+root         33      2  0 04:53 ?        00:00:00 [ata_sff]
+root         34      2  0 04:53 ?        00:00:00 [md]
+root         35      2  0 04:53 ?        00:00:00 [edac-poller]
+root         36      2  0 04:53 ?        00:00:00 [devfreq_wq]
+root         37      2  0 04:53 ?        00:00:00 [watchdogd]
+root         41      2  0 04:53 ?        00:00:00 [kswapd0]
+root         42      2  0 04:53 ?        00:00:00 [kworker/u257:0]
+root         43      2  0 04:53 ?        00:00:00 [ecryptfs-kthrea]
+root         85      2  0 04:53 ?        00:00:00 [kthrotld]
+root         86      2  0 04:53 ?        00:00:00 [acpi_thermal_pm]
+root         87      2  0 04:53 ?        00:00:00 [scsi_eh_0]
+root         88      2  0 04:53 ?        00:00:00 [scsi_tmf_0]
+root         89      2  0 04:53 ?        00:00:00 [scsi_eh_1]
+root         90      2  0 04:53 ?        00:00:00 [scsi_tmf_1]
+root         96      2  0 04:53 ?        00:00:00 [ipv6_addrconf]
+root        105      2  0 04:53 ?        00:00:00 [kstrp]
+root        122      2  0 04:53 ?        00:00:00 [charger_manager]
+root        186      2  0 04:53 ?        00:00:00 [mpt_poll_0]
+root        187      2  0 04:53 ?        00:00:00 [mpt/0]
+root        233      2  0 04:53 ?        00:00:00 [scsi_eh_2]
+root        234      2  0 04:53 ?        00:00:00 [scsi_tmf_2]
+root        235      2  0 04:53 ?        00:00:00 [scsi_eh_3]
+root        236      2  0 04:53 ?        00:00:00 [scsi_tmf_3]
+root        237      2  0 04:53 ?        00:00:00 [scsi_eh_4]
+root        238      2  0 04:53 ?        00:00:00 [scsi_tmf_4]
+root        239      2  0 04:53 ?        00:00:00 [scsi_eh_5]
+root        240      2  0 04:53 ?        00:00:00 [scsi_tmf_5]
+root        241      2  0 04:53 ?        00:00:00 [scsi_eh_6]
+root        242      2  0 04:53 ?        00:00:00 [scsi_tmf_6]
+root        243      2  0 04:53 ?        00:00:00 [scsi_eh_7]
+root        244      2  0 04:53 ?        00:00:00 [scsi_tmf_7]
+root        245      2  0 04:53 ?        00:00:00 [scsi_eh_8]
+root        246      2  0 04:53 ?        00:00:00 [scsi_tmf_8]
+root        247      2  0 04:53 ?        00:00:00 [scsi_eh_9]
+root        248      2  0 04:53 ?        00:00:00 [scsi_tmf_9]
+root        249      2  0 04:53 ?        00:00:00 [scsi_eh_10]
+root        250      2  0 04:53 ?        00:00:00 [scsi_tmf_10]
+root        251      2  0 04:53 ?        00:00:00 [scsi_eh_11]
+root        252      2  0 04:53 ?        00:00:00 [scsi_tmf_11]
+root        253      2  0 04:53 ?        00:00:00 [scsi_eh_12]
+root        254      2  0 04:53 ?        00:00:00 [scsi_tmf_12]
+root        255      2  0 04:53 ?        00:00:00 [scsi_eh_13]
+root        256      2  0 04:53 ?        00:00:00 [scsi_tmf_13]
+root        257      2  0 04:53 ?        00:00:00 [scsi_eh_14]
+root        258      2  0 04:53 ?        00:00:00 [scsi_tmf_14]
+root        259      2  0 04:53 ?        00:00:00 [scsi_eh_15]
+root        260      2  0 04:53 ?        00:00:00 [scsi_tmf_15]
+root        261      2  0 04:53 ?        00:00:00 [scsi_eh_16]
+root        262      2  0 04:53 ?        00:00:00 [scsi_tmf_16]
+root        263      2  0 04:53 ?        00:00:00 [scsi_eh_17]
+root        264      2  0 04:53 ?        00:00:00 [scsi_tmf_17]
+root        265      2  0 04:53 ?        00:00:00 [scsi_eh_18]
+root        266      2  0 04:53 ?        00:00:00 [scsi_tmf_18]
+root        267      2  0 04:53 ?        00:00:00 [scsi_eh_19]
+root        268      2  0 04:53 ?        00:00:00 [scsi_tmf_19]
+root        269      2  0 04:53 ?        00:00:00 [scsi_eh_20]
+root        270      2  0 04:53 ?        00:00:00 [scsi_tmf_20]
+root        271      2  0 04:53 ?        00:00:00 [scsi_eh_21]
+root        272      2  0 04:53 ?        00:00:00 [scsi_tmf_21]
+root        273      2  0 04:53 ?        00:00:00 [scsi_eh_22]
+root        274      2  0 04:53 ?        00:00:00 [scsi_tmf_22]
+root        275      2  0 04:53 ?        00:00:00 [scsi_eh_23]
+root        276      2  0 04:53 ?        00:00:00 [scsi_tmf_23]
+root        277      2  0 04:53 ?        00:00:00 [scsi_eh_24]
+root        278      2  0 04:53 ?        00:00:00 [scsi_tmf_24]
+root        279      2  0 04:53 ?        00:00:00 [scsi_eh_25]
+root        280      2  0 04:53 ?        00:00:00 [scsi_tmf_25]
+root        281      2  0 04:53 ?        00:00:00 [scsi_eh_26]
+root        282      2  0 04:53 ?        00:00:00 [scsi_tmf_26]
+root        283      2  0 04:53 ?        00:00:00 [scsi_eh_27]
+root        284      2  0 04:53 ?        00:00:00 [scsi_tmf_27]
+root        285      2  0 04:53 ?        00:00:00 [scsi_eh_28]
+root        286      2  0 04:53 ?        00:00:00 [scsi_tmf_28]
+root        287      2  0 04:53 ?        00:00:00 [scsi_eh_29]
+root        288      2  0 04:53 ?        00:00:00 [scsi_tmf_29]
+root        289      2  0 04:53 ?        00:00:00 [scsi_eh_30]
+root        290      2  0 04:53 ?        00:00:00 [scsi_tmf_30]
+root        291      2  0 04:53 ?        00:00:00 [scsi_eh_31]
+root        292      2  0 04:53 ?        00:00:00 [scsi_tmf_31]
+root        293      2  0 04:53 ?        00:00:00 [scsi_eh_32]
+root        294      2  0 04:53 ?        00:00:00 [scsi_tmf_32]
+root        323      2  0 04:53 ?        00:00:00 [ttm_swap]
+root        324      2  0 04:53 ?        00:00:00 [irq/16-vmwgfx]
+root        327      2  0 04:53 ?        00:00:00 [kworker/0:1H]
+root        330      2  0 04:53 ?        00:00:00 [kworker/1:1H]
+root        338      2  0 04:53 ?        00:00:00 [kdmflush]
+root        339      2  0 04:53 ?        00:00:00 [bioset]
+root        413      2  0 04:53 ?        00:00:00 [raid5wq]
+root        468      2  0 04:53 ?        00:00:00 [jbd2/dm-0-8]
+root        469      2  0 04:53 ?        00:00:00 [ext4-rsv-conver]
+root        536      1  0 04:53 ?        00:00:00 /lib/systemd/systemd-journald
+root        549      2  0 04:53 ?        00:00:00 [iscsi_eh]
+root        551      1  0 04:53 ?        00:00:00 /sbin/lvmetad -f
+root        553      2  0 04:53 ?        00:00:00 [ib-comp-wq]
+root        554      2  0 04:53 ?        00:00:00 [ib-comp-unb-wq]
+root        555      2  0 04:53 ?        00:00:00 [ib_mcast]
+root        556      2  0 04:53 ?        00:00:00 [ib_nl_sa_wq]
+root        560      2  0 04:53 ?        00:00:00 [rdma_cm]
+root        564      1  0 04:53 ?        00:00:00 /lib/systemd/systemd-udevd
+root        600      2  0 04:53 ?        00:00:00 [kworker/u257:2]
+root        743      2  0 04:53 ?        00:00:00 [jbd2/sda2-8]
+root        744      2  0 04:53 ?        00:00:00 [ext4-rsv-conver]
+systemd+    754      1  0 04:53 ?        00:00:00 /lib/systemd/systemd-timesyncd
+root        982      1  0 04:53 ?        00:00:00 /usr/bin/VGAuthService
+root        989      1  0 04:53 ?        00:00:07 /usr/bin/vmtoolsd
+systemd+   1045      1  0 04:53 ?        00:00:00 /lib/systemd/systemd-networkd
+systemd+   1064      1  0 04:53 ?        00:00:00 /lib/systemd/systemd-resolved
+root       1168      1  0 04:53 ?        00:00:00 /usr/lib/accountsservice/accounts-daemon
+root       1177      1  0 04:53 ?        00:00:00 /usr/bin/python3 /usr/bin/networkd-dispatcher --run-startup-triggers
+root       1178      1  0 04:53 ?        00:00:01 /usr/bin/lxcfs /var/lib/lxcfs/
+daemon     1181      1  0 04:53 ?        00:00:00 /usr/sbin/atd -f
+root       1201      1  0 04:53 ?        00:00:00 /usr/sbin/cron -f
+root       1211      1  0 04:53 ?        00:00:00 /usr/sbin/irqbalance --foreground
+root       1217      1  0 04:53 ?        00:00:00 /lib/systemd/systemd-logind
+message+   1252      1  0 04:53 ?        00:00:00 /usr/bin/dbus-daemon --system --address=systemd: --nofork --nopidfile --systemd-activation --syslog-only
+root       1289      1  0 04:53 ?        00:00:00 /usr/bin/python3 /usr/share/unattended-upgrades/unattended-upgrade-shutdown --wait-for-signal
+root       1376      1  0 04:53 ?        00:00:00 /usr/lib/policykit-1/polkitd --no-debug
+root       1386      1  0 04:53 tty1     00:00:00 /bin/login -p --
+mh         1792      1  0 04:53 ?        00:00:00 /lib/systemd/systemd --user
+mh         1797   1792  0 04:53 ?        00:00:00 (sd-pam)
+mh         1816   1386  0 04:53 tty1     00:00:00 -bash
+root       2572      2  0 04:56 ?        00:00:03 [kworker/0:4]
+syslog     5973      1  0 05:00 ?        00:00:00 /usr/sbin/rsyslogd -n
+root       6363   1816  0 05:01 tty1     00:00:00 su -
+root       6364   6363  0 05:01 tty1     00:00:01 -su
+root       6557      1  0 05:08 ?        00:00:00 /usr/sbin/apache2 -k start
+www-data   6559   6557  0 05:08 ?        00:00:01 /usr/sbin/apache2 -k start
+www-data   6560   6557  0 05:08 ?        00:00:01 /usr/sbin/apache2 -k start
+tomcat     6663      1  0 05:08 ?        00:00:17 /usr/lib/jvm/default-java/bin/java -Djava.util.logging.config.file=/var/lib/tomcat9/conf/logging.properties -Djava.util.logging.manager=org.apache.juli.ClassLoaderLogManager -Djava.awt.headless=true -XX:+UseG1GC -Djdk.tls.ephemeralDHKeySize=2048 -Djava.protocol.handler.pkgs=org.apache.catalina.webresources -Dorg.apache.catalina.security.SecurityListener.UMASK=0027 -Dignore.endorsed.dirs= -classpath /usr/share/tomcat9/bin/bootstrap.jar:/usr/share/tomcat9/bin/tomcat-juli.jar -Dcatalina.base=/var/lib/tomcat9 -Dcatalina.home=/usr/share/tomcat9 -Djava.io.tmpdir=/tmp org.apache.catalina.startup.Bootstrap start
+root       7135      1  0 05:12 ?        00:00:00 /usr/sbin/sshd -D
+root       7170      2  0 05:12 ?        00:00:00 [kworker/1:3]
+root       7171      2  0 05:12 ?        00:00:00 [kworker/1:4]
+root       7434      2  0 05:31 ?        00:00:01 [kworker/u256:0]
+root       7439      2  0 05:49 ?        00:00:00 [kworker/u256:1]
+root       7443      2  0 05:50 ?        00:00:03 [kworker/0:0]
+root       7567      2  0 06:03 ?        00:00:00 [kworker/u256:2]
+root       7793      2  0 06:12 ?        00:00:00 [kworker/0:1]
+root       7823   6364  0 06:14 tty1     00:00:00 sh Apache_v2.0_201705.sh
+root       7909   7823  0 06:15 tty1     00:00:00 ps -ef
+
+
+2) chkconfig --list
+
+Apache_v2.0_201705.sh: 377: Apache_v2.0_201705.sh: chkconfig: not found
+
+
+
